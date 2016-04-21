@@ -24,8 +24,6 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self setTopView];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeFrame:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustFrame) name:UIKeyboardWillHideNotification object:nil];    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeHUD) name:NoNet object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeHUD) name:UserRelogin object:nil];
     
     
@@ -100,55 +98,6 @@
     self.titleLabel.text = titleStr;
 }
 
-#pragma mark - 监听键盘frame的改变
-- (void)changeFrame:(NSNotification *)noti
-{
-    if (self.margin > 200) {
-        return;
-    }
-    
-    NSDictionary *userInfo = noti.userInfo;
-    CGRect keybordFrame = [userInfo[@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
-    CGFloat keybordHeigt = keybordFrame.size.height;
-    
-    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
-    UIView *firstResponder = [keyWindow performSelector:@selector(firstResponder)];
-    
-    CGRect firstFrame = [self.view convertRect:firstResponder.frame fromView:firstResponder.superview];
-    CGFloat firstY = firstFrame.origin.y + firstFrame.size.height;
-    
-    CGFloat margin = keybordHeigt - (SCREEN_HEIGHT - firstY);
-    
-    if (margin < 0) {
-        return;
-    }
-    
-    self.margin = self.margin + margin;
-    [UIView animateWithDuration:0.2 animations:^{
-        self.view.frame = CGRectOffset(self.view.frame, 0, - margin);
-    }];
-}
 
-- (void)adjustFrame
-{
-    if (self.margin == 0) {
-        return;
-    }
-    [UIView animateWithDuration:0.2 animations:^{
-        self.view.frame = CGRectOffset(self.view.frame, 0, self.margin);
-    }];
-    self.margin = 0;
-}
-
-#pragma mark - 移除通知
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [self.view endEditing:YES];
-}
 
 @end
