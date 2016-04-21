@@ -18,6 +18,12 @@
 @property (nonatomic) BOOL isMaxWidth;
 
 
+
+
+
+
+
+
 @end
 
 @implementation PrintscreenController
